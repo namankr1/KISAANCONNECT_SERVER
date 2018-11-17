@@ -32,7 +32,6 @@ def getGovtNotifications():
 def raiseInterest(senderphone, recieverphone,quoteid,price,quantity):
     senderid = getuserid(senderphone)
     recieverid = getuserid(recieverphone)
-    print "hi"
     sender = Profile.objects.filter(id = senderid)
     reciever = Profile.objects.filter(id = recieverid)
     if len(sender)==0:
@@ -69,12 +68,10 @@ def getNotifications(phone):
     return jsonout
 
 def negotiate(senderphone, recieverphone,quoteid,price,quantity):
-	print "hi"
 	senderid = getuserid(senderphone)
 	recieverid = getuserid(recieverphone)
 	sender1 = Profile.objects.filter(id = senderid)
 	reciever1 = Profile.objects.filter(id = recieverid)
-	print "hi"
 	if len(sender1)==0:
 		return -1
 	if len(reciever1) == 0:
@@ -82,16 +79,13 @@ def negotiate(senderphone, recieverphone,quoteid,price,quantity):
 	quote1 = Quote.objects.filter(id = quoteid)
 	if len(quote1)==0:
 		return -3
-	print "hi"
 	accountNotification = models.AccountNotification.objects.filter(reciever=sender1[0],sender=reciever1[0],quote=quote1[0])
 	if len(accountNotification)==0:
 		return -4
-	print "hi"
 	accountNotification.update(sender=sender1[0],reciever= reciever1[0],price=price,quantity=quantity)
 	return 1
 
 def endNegotiation(senderphone, recieverphone,quoteid,status):
-    print "hi"
     senderid = getuserid(senderphone)
     recieverid = getuserid(recieverphone)
     sender = Profile.objects.filter(id = senderid)
@@ -99,14 +93,13 @@ def endNegotiation(senderphone, recieverphone,quoteid,status):
     if len(sender)==0:
         return -1
     if len(reciever) == 0:
-		return -2
+        return -2
     quote = Quote.objects.filter(id = quoteid)
     if len(quote)==0:
-		return -3
+        return -3
     accountNotification = models.AccountNotification.objects.filter(reciever =sender[0],sender=reciever[0],quote=quote[0])
     if len(accountNotification)==0:
         return -4
-    print len(accountNotification)
     temp1=accountNotification[0].quantity
     if status != 1 and status != -1:
         return -5
@@ -126,7 +119,6 @@ def getNegotiationsOfUser(phone):
         return -1
     negotiations1 = models.AccountNotification.objects.filter(reciever = user).exclude(status=1).exclude(status=-1)
     negotiations2 = models.AccountNotification.objects.filter(sender = user).exclude(status=1).exclude(status=-1)
-    print "hi"
     jsonout=[]
     for n in negotiations1:
         d={}
@@ -159,7 +151,6 @@ def getOrdersOfUser(phone):
         return -1
     negotiations1 = models.AccountNotification.objects.filter(reciever = user,status=1)
     negotiations2 = models.AccountNotification.objects.filter(sender = user,status=1)
-    print "hi"
     jsonout=[]
     for n in negotiations1:
         d={}
@@ -218,7 +209,6 @@ def whatOthersSell(quotesnearby,subcategories):
         d["subcategoryname"] = subcategory["name"]
         p=[]
         for q in quotesnearby:
-            print q
             if q.subcategory.id != subcategory["id"]:
                 p.append(q)
         
@@ -228,8 +218,6 @@ def whatOthersSell(quotesnearby,subcategories):
             percentOfQuotesInSubCategory = 'Nil'
         d["percent"] = percentOfQuotesInSubCategory
         jsonout.append(d)
-    print jsonout
-
     return jsonout
 
 
@@ -258,14 +246,10 @@ def percentpricechange(quotesnearby,bidvalue,subcategories):
         percentprice = 0
         i=0
         for q in quotesnearby:
-            print q
             if q.subcategory.id == subcategory["id"]:
-                print "-----"+str(bidvalue[i])
                 sr = sr + q.price
                 sb = sb + bidvalue[i]
             i=i+1
-        print sr 
-        print sb
         if sr !=0:
             percentprice = math.ceil(((sb - sr)/sr)*100)
         else:
@@ -320,9 +304,7 @@ def marketInsights(phone):
     user = Profile.objects.filter(id = userid)
     if len(user)==0:
         return -1
-    print "ji1"
     usersnearby = nearbyusers(user[0])
-    print "ji"
     quotesnearby = []
     for u in usersnearby:
         quotes = Quote.objects.filter(profile=u)
@@ -333,7 +315,6 @@ def marketInsights(phone):
     for category in categories:
         subcategories = categorizationServices.getSubcategories(category["id"])
         d={}
-        print "ji"
         d["category"] = category
         d["subcategories"] = subcategories
         p = whatOthersSell(quotesnearby,subcategories)

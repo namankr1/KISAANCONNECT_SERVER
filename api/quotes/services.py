@@ -30,7 +30,6 @@ def addQuote(phone,subcategoryId,type,quantity,price,description=None):
 
 def getQuote(quoteId):
     quoteobj = models.Quote.objects.filter(id=quoteId)
-    print "hi"
     if len(quoteobj)==0:
         return -1
     else:
@@ -40,15 +39,11 @@ def getQuote(quoteId):
         jsonout['quantity']=quoteobj[0].quantity
         jsonout['price']=quoteobj[0].price
         jsonout['description']=quoteobj[0].description
-        print "hi"
         jsonout['profile']=userservices.getProfile({"userid":quoteobj[0].profile.id})
         jsonout['subcategoryname']=quoteobj[0].subcategory.name
-        print "hi"
         jsonout['is_active']=quoteobj[0].is_active
         jsonout['bidvalue']=quoteobj[0].bidvalue
-        print "hi"
         ratingobj=models.Rating.objects.filter(profile=quoteobj[0].profile,subcategory=quoteobj[0].subcategory)
-        print "hi"
         jsonout['rating']=ratingobj[0].rating
         
         return jsonout
@@ -89,7 +84,6 @@ def updateQuote(jsonin):
         return 0
         
 def getQuotesbyUser(phone,subcategoryId):
-    print "hi"
     if len(phone) !=10:
         return -1
     u=User.objects.filter(username='I'+str(phone))
@@ -101,9 +95,7 @@ def getQuotesbyUser(phone,subcategoryId):
     subcategoryobj=categorymodels.Subcategory.objects.filter(id = subcategoryId)
     if len(subcategoryobj)==0:
         return -3
-    print "hi"
     quoteobj = models.Quote.objects.filter(profile=profileobj[0],subcategory=subcategoryobj[0])
-    print len(quoteobj)
     jsonout=[]
     for q in quoteobj:
         j=getQuote(q.id)
@@ -111,7 +103,6 @@ def getQuotesbyUser(phone,subcategoryId):
     return jsonout
 
 def getallQuotesbyUser(phone):
-    print "hi"
     if len(phone) !=10:
         return -1
     u=User.objects.filter(username='I'+str(phone))
@@ -121,7 +112,6 @@ def getallQuotesbyUser(phone):
     if len(profileobj)==0:
         return -2
     quoteobj = models.Quote.objects.filter(profile=profileobj[0])
-    print len(quoteobj)
     jsonout=[]
     for q in quoteobj:
         j=getQuote(q.id)
@@ -131,14 +121,11 @@ def getallQuotesbyUser(phone):
 def distance(lat1, lng1, lat2, lng2):
     #return distance as meter if you want km distance, remove "* 1000"
     radius = 6371 * 1000
-    print "hi"
     dLat = (lat2-lat1) * math.pi / 180
     dLng = (lng2-lng1) * math.pi / 180
-    print "hi"
     lat1 = lat1 * math.pi / 180
     lat2 = lat2 * math.pi / 180
     val = math.sin(dLat/2) * math.sin(dLat/2) + math.sin(dLng/2) * math.sin(dLng/2) * math.cos(lat1) * math.cos(lat2)  
-    print "hi"
     ang = 2 * math.atan2(math.sqrt(val), math.sqrt(1-val))
     return radius * ang
 
@@ -157,17 +144,12 @@ def searchQuotes(phone,subcategoryId):
     lat1 = profileobj[0].location.latitude
     lon1 = profileobj[0].location.longitude
     quoteobj = models.Quote.objects.filter(subcategory=subcategoryobj[0]).exclude(profile=profileobj[0])
-    print len(quoteobj)
     jsonout=[]
     for q in quoteobj:
         d={}
-        print "hi"
         lat2=q.profile.location.latitude
-        print "hi"
         lon2 = q.profile.location.longitude
-        print "hi"
         dis=distance(lat1,lon1,lat2,lon2)
-        print "hi"
         ratingobj=models.Rating.objects.filter(profile=q.profile,subcategory=subcategoryobj[0])
         rating=ratingobj[0].rating
         d['quote']=getQuote(q.id)

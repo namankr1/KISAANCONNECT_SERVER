@@ -6,9 +6,18 @@ import json,urllib
 from categorization import services as catservices
 
 def getLatLon(address):
-    address = urllib.quote_plus(address)
-    geo = urllib.urlopen("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=%s" % (address))
-    return geo.read()
+    #address = urllib.quote_plus(address)
+    #geo = urllib.urlopen("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=%s" % (address))
+    #return geo.read()
+    latlondata = {}
+    latlondata['geometry'] = {}
+    latlondata['geometry']['location'] = {}
+    latlondata['geometry']['location']['lat'] = 12.9716
+    latlondata['geometry']['location']['lng'] = 77.5946
+    geo = {}
+    geo['status'] = "OK"
+    geo['results'] = [latlondata]
+    return json.dumps(geo)
 
 def sendOTP(phone):
     u=User.objects.filter(username='I'+str(phone))
@@ -42,7 +51,6 @@ def profile_signup(firstName,lastName,phone,address,password):
     if len(u)>0:
         return -7
     user = User.objects.create_user(username = accountType+str(phone), password = password,first_name=firstName,last_name= lastName,is_active=False)
-    print password
     user.save()
     try:
         geo = json.loads(getLatLon(address))
@@ -74,7 +82,7 @@ def user_signin(phone, password,request):
     if len(u)==0:
         return -3
     profileobj=models.Profile.objects.filter(user=u[0])
-    print u[0].username+","+password
+    #print u[0].username+","+password
     #user = authenticate(username= u[0].username, password = password)
     
     if u[0].check_password(password):
@@ -120,7 +128,7 @@ def changePassword(phone,oldpassword,newpassword):
         u[0].set_password(newpassword)
         u[0].save()
         if(u[0].check_password(newpassword)):
-            print "Changed"
+            print ("Changed")
         return 1
     else:
         return -3
@@ -135,7 +143,7 @@ def forgotPassword(phone,otp,newpassword):
         u[0].set_password(newpassword)
         u[0].save()
         if(u[0].check_password(newpassword)):
-            print "Changed"
+            print ("Changed")
         return 1
     else:
         return resultotp
@@ -189,7 +197,6 @@ def profileUpdate(jsonin, img=None):
         return 0
 
 def getProfile(jsonin):
-    print "his"
     if 'phone' in jsonin:
         u=User.objects.filter(username='I'+str(jsonin['phone']))
         if len(u)==0:

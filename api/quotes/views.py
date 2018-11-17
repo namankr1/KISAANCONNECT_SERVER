@@ -12,7 +12,6 @@ def addquote(request):
             jsonin = json.loads(request.body)
             
             if 'description' in jsonin:
-                print "ko"
                 result = services.addQuote(jsonin['phone'],jsonin['subcategoryId'], jsonin['type'],jsonin['quantity'],jsonin['price'],jsonin['description'])
             else:
                 result = services.addQuote(jsonin['phone'],jsonin['subcategoryId'], jsonin['type'],jsonin['quantity'],jsonin['price'])
@@ -53,7 +52,6 @@ def getquotebyuser(request):
         result = 0
         try:
             jsonin = json.loads(request.body)
-            print "ko"
             result = services.getQuotesbyUser(jsonin['phone'],jsonin['subcategoryId'])
         except Exception:
             return JsonResponse({'status':'err','message':'Data given to server is invalid;सर्वर के लिए दिए गए डेटा अमान्य है;সার্ভার দেওয়া তথ্য অবৈধ;సర్వర్ ఇచ్చిన డేటా చెల్లదు;सर्व्हर देण्यात डेटा अवैध आहे;சர்வர் கொடுக்கப்பட்ட தரவு தவறானது;سرور کو دیا ڈیٹا غلط ہے;સર્વર આપવામાં ડેટા અમાન્ય છે;ಸರ್ವರ್ ನೀಡಿದ ಡೇಟಾ ಅಮಾನ್ಯವಾಗಿದೆ;സെർവറിലേക്ക് തന്നിരിക്കുന്ന ഡാറ്റ അസാധുവാണ്;ਸਰਵਰ ਨੂੰ ਦਿੱਤੇ ਡਾਟਾ ਗਲਤ ਹੈ;सर्भर दिइएको डाटा अमान्य छ;سرور کي ڏنو ڊيٽا غلط آهي'})
